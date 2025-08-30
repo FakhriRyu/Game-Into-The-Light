@@ -70,7 +70,7 @@ func state_chase(_delta):
 func state_attack(_delta):
 	if target == null or (target.has_method("is_dead") and target.is_dead):
 		$AttackTimer.stop()
-		change_state(State.PATROL)
+		change_state(State.IDLE)
 		return
 
 	velocity.x = 0
@@ -120,4 +120,3 @@ func _on_attack_timer_timeout() -> void:
 
 	if target.has_method("take_damage"):
 		target.take_damage(attack_damage)
-

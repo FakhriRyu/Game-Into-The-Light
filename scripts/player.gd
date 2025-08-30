@@ -9,9 +9,11 @@ const JUMP_VELOCITY = -220.0
 # Tambahan: health
 var health := 30
 var is_dead := false
+var spawn_point: Vector2
 
 func _ready():
 	add_to_group("player")
+	spawn_point = global_position
 
 func _physics_process(delta: float) -> void:
 	# Gravity
@@ -55,6 +57,19 @@ func take_damage(amount: int) -> void:
 		die()
 
 func die():
+	is_dead = true
 	print("Player mati!")
 	anim_player.play("dead")
-	set_physics_process(false)  # disable input dan physics sementara
+	set_physics_process(false)  # stop physics & input
+	
+	# Tunggu 2 detik lalu respawn
+	var timer := get_tree().create_timer(2.0)
+	timer.timeout.connect(respawn)
+
+
+func respawn():
+	global_position = spawn_point
+	health = 30
+	is_dead = false
+	set_physics_process(true)
+	print("Player respawn di: ", spawn_point)

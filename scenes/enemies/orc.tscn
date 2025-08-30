@@ -259,6 +259,7 @@ position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_hbdu5")
 
 [node name="AttackTimer" type="Timer" parent="."]
+wait_time = 0.16
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
