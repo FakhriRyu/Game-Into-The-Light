@@ -1,0 +1,163 @@
+[gd_scene load_steps=39 format=3 uid="uid://48bufkj1yw3u"]
+
+[ext_resource type="Script" uid="uid://c0xhoipv2ear5" path="res://scripts/player.gd" id="1_8afob"]
+[ext_resource type="Texture2D" uid="uid://bbk88eudhbj6x" path="res://assets/player/Warrior/idle/Warrior_Idle_1.png" id="2_dovo2"]
+[ext_resource type="Texture2D" uid="uid://cbr788rcciiv1" path="res://assets/player/Warrior/idle/Warrior_Idle_3.png" id="3_p47bc"]
+[ext_resource type="Texture2D" uid="uid://0m3o76ca3axr" path="res://assets/player/Warrior/idle/Warrior_Idle_5.png" id="4_75vfm"]
+[ext_resource type="Texture2D" uid="uid://bqb7tc6uacj6h" path="res://assets/player/Warrior/idle/Warrior_Idle_6.png" id="5_0owmy"]
+[ext_resource type="Texture2D" uid="uid://dtx8k8fiv62ki" path="res://assets/player/Warrior/Jump/Warrior_Jump_1.png" id="6_qek5x"]
+[ext_resource type="Texture2D" uid="uid://cb0p0o4ilrcny" path="res://assets/player/Warrior/Jump/Warrior_Jump_2.png" id="7_5gtgg"]
+[ext_resource type="Texture2D" uid="uid://buol5sij8vrb3" path="res://assets/player/Warrior/Jump/Warrior_Jump_3.png" id="8_h17s1"]
+[ext_resource type="Texture2D" uid="uid://buv7fhd6khp5u" path="res://assets/player/Warrior/Run/Warrior_Run_1.png" id="9_myrg7"]
+[ext_resource type="Texture2D" uid="uid://8foa5asylmd6" path="res://assets/player/Warrior/Run/Warrior_Run_2.png" id="10_kvlxm"]
+[ext_resource type="Texture2D" uid="uid://bpoh5nr7evewu" path="res://assets/player/Warrior/Run/Warrior_Run_3.png" id="11_uf5tr"]
+[ext_resource type="Texture2D" uid="uid://b1nlb18wmy5b" path="res://assets/player/Warrior/Run/Warrior_Run_4.png" id="12_lgqa7"]
+[ext_resource type="Texture2D" uid="uid://dhbbxawr8gykn" path="res://assets/player/Warrior/Run/Warrior_Run_5.png" id="13_8ydkj"]
+[ext_resource type="Texture2D" uid="uid://c657nsu0yqg6y" path="res://assets/player/Warrior/Run/Warrior_Run_6.png" id="14_3j4b4"]
+[ext_resource type="Texture2D" uid="uid://c42ipfhb6j62e" path="res://assets/player/Warrior/Run/Warrior_Run_7.png" id="15_yj68g"]
+[ext_resource type="Texture2D" uid="uid://df1pr00btnwyo" path="res://assets/player/Warrior/Run/Warrior_Run_8.png" id="16_ioxgp"]
+[ext_resource type="Texture2D" uid="uid://boc4rw0axryny" path="res://assets/player/Warrior/Fall/Warrior_Fall_1.png" id="17_lgqa7"]
+[ext_resource type="Texture2D" uid="uid://dks2nesaxyfnm" path="res://assets/player/Warrior/Fall/Warrior_Fall_2.png" id="18_8ydkj"]
+[ext_resource type="Texture2D" uid="uid://covf4tlpgkpqg" path="res://assets/player/Warrior/Fall/Warrior_Fall_3.png" id="19_3j4b4"]
+[ext_resource type="Texture2D" uid="uid://b44yhavvk2h7o" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_1.png" id="20_iqsei"]
+[ext_resource type="Texture2D" uid="uid://ryf2p04w3gpr" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_2.png" id="21_tffgl"]
+[ext_resource type="Texture2D" uid="uid://bml1u5u2sw637" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_3.png" id="22_pk8ii"]
+[ext_resource type="Texture2D" uid="uid://caygmd5tlee5x" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_4.png" id="23_5mf0n"]
+[ext_resource type="Texture2D" uid="uid://bmn84qmcjjhit" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_5.png" id="24_4hvnv"]
+[ext_resource type="Texture2D" uid="uid://xy7oyctrg84" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_6.png" id="25_bbmj2"]
+[ext_resource type="Texture2D" uid="uid://dd3kywych6rp1" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_7.png" id="26_kxw46"]
+[ext_resource type="Texture2D" uid="uid://dd1t8bva4a6d1" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_8.png" id="27_8qxvo"]
+[ext_resource type="Texture2D" uid="uid://b3usfm1sh6r83" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_9.png" id="28_5q8fn"]
+[ext_resource type="Texture2D" uid="uid://clv6r3vni4so6" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_10.png" id="29_wva7c"]
+[ext_resource type="Texture2D" uid="uid://cksi86vy4nu1" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_11.png" id="30_7obkq"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dovo2"]
+radius = 7.0
+height = 32.0
+
+[sub_resource type="Animation" id="Animation_qek5x"]
+resource_name = "idle"
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("2_dovo2"), ExtResource("3_p47bc"), ExtResource("4_75vfm"), ExtResource("2_dovo2"), ExtResource("5_0owmy"), ExtResource("2_dovo2")]
+}
+
+[sub_resource type="Animation" id="Animation_5gtgg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_dovo2")]
+}
+
+[sub_resource type="Animation" id="Animation_je7p5"]
+resource_name = "jump"
+length = 0.4
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [ExtResource("6_qek5x"), ExtResource("7_5gtgg"), ExtResource("8_h17s1")]
+}
+
+[sub_resource type="Animation" id="Animation_cnsyf"]
+resource_name = "run"
+length = 0.7
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("9_myrg7"), ExtResource("10_kvlxm"), ExtResource("11_uf5tr"), ExtResource("12_lgqa7"), ExtResource("13_8ydkj"), ExtResource("14_3j4b4"), ExtResource("15_yj68g"), ExtResource("16_ioxgp")]
+}
+
+[sub_resource type="Animation" id="Animation_yj68g"]
+resource_name = "fall"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [ExtResource("17_lgqa7"), ExtResource("18_8ydkj"), ExtResource("19_3j4b4")]
+}
+
+[sub_resource type="Animation" id="Animation_vo27k"]
+resource_name = "dead"
+length = 1.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("20_iqsei"), ExtResource("21_tffgl"), ExtResource("22_pk8ii"), ExtResource("23_5mf0n"), ExtResource("24_4hvnv"), ExtResource("25_bbmj2"), ExtResource("26_kxw46"), ExtResource("27_8qxvo"), ExtResource("28_5q8fn"), ExtResource("29_wva7c"), ExtResource("30_7obkq")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_h17s1"]
+_data = {
+&"RESET": SubResource("Animation_5gtgg"),
+&"dead": SubResource("Animation_vo27k"),
+&"fall": SubResource("Animation_yj68g"),
+&"idle": SubResource("Animation_qek5x"),
+&"jump": SubResource("Animation_je7p5"),
+&"run": SubResource("Animation_cnsyf")
+}
+
+[node name="player" type="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_8afob")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dovo2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["player"]]
+position = Vector2(-5, 5)
+shape = SubResource("CapsuleShape2D_dovo2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_h17s1")
+}
+autoplay = "idle"
