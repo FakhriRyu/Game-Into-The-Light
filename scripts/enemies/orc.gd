@@ -35,7 +35,6 @@ func _physics_process(delta):
 
 func state_idle():
 	anim_player.play("idle")
-	# contoh: langsung pindah ke patrol
 	change_state(State.PATROL)
 
 func state_patrol(_delta):

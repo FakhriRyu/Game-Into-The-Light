@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=4 uid="uid://cfpy1kxebfqev"]
+[gd_scene load_steps=8 format=4 uid="uid://cfpy1kxebfqev"]
 
 [ext_resource type="PackedScene" uid="uid://48bufkj1yw3u" path="res://scenes/player/player.tscn" id="1_cfjva"]
 [ext_resource type="Texture2D" uid="uid://de0u4yw40tjnx" path="res://assets/backgrounds/cave.png" id="1_ybxn4"]
 [ext_resource type="Texture2D" uid="uid://b8aujh66cnm8r" path="res://assets/tiles/cavesTiles.png" id="2_2lb6k"]
+[ext_resource type="PackedScene" uid="uid://d246jowbniim6" path="res://scenes/enemies/bat.tscn" id="4_u8rbc"]
 [ext_resource type="PackedScene" uid="uid://e3iffwap1x51" path="res://scenes/enemies/orc.tscn" id="4_xbhhu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ybxn4"]
@@ -615,6 +616,9 @@ zoom = Vector2(9, 9)
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAvAC8AAAAJAAkAAAAwAC8AAAAJAAkAAAAxAC8AAAAJAAkAAAAyAC8AAAAJAAkAAAAzAC8AAAAJAAkAAAA0AC8AAAAJAAkAAAA1AC8AAAAJAAkAAAA2AC8AAAAJAAkAAAA3AC8AAAAJAAkAAAA4AC8AAAAJAAkAAAA5AC8AAAAJAAkAAAA6AC8AAAAJAAkAAAA7AC8AAAAJAAkAAAA8AC8AAAAJAAkAAAA9AC8AAAAJAAkAAAA+AC8AAAAJAAkAAAA/AC8AAAAJAAkAAABAAC8AAAAJAAkAAABBAC8AAAAJAAkAAABCAC8AAAAJAAkAAABDAC8AAAAJAAkAAABEAC8AAAAJAAkAAABFAC8AAAAJAAkAAABGAC8AAAAJAAkAAABHAC8AAAAJAAkAAABIAC8AAAAJAAkAAABJAC8AAAAJAAkAAABKAC8AAAAJAAkAAABLAC8AAAAJAAkAAABMAC8AAAAJAAkAAABNAC8AAAAJAAkAAABOAC8AAAAJAAkAAAAvADAAAAAJAAoAAAAwADAAAAAJAAoAAAAxADAAAAAJAAoAAAAyADAAAAAJAAoAAAAzADAAAAAJAAoAAAA0ADAAAAAJAAoAAAA1ADAAAAAJAAoAAAA2ADAAAAAJAAoAAAA3ADAAAAAJAAoAAAA4ADAAAAAJAAoAAAA5ADAAAAAJAAoAAAA6ADAAAAAJAAoAAAA7ADAAAAAJAAoAAAA8ADAAAAAJAAoAAAA9ADAAAAAJAAoAAAA+ADAAAAAJAAoAAAA/ADAAAAAJAAoAAABAADAAAAAJAAoAAABBADAAAAAJAAoAAABCADAAAAAJAAoAAABDADAAAAAJAAoAAABEADAAAAAJAAoAAABFADAAAAAJAAoAAABGADAAAAAJAAoAAABHADAAAAAJAAoAAABIADAAAAAJAAoAAABJADAAAAAJAAoAAABKADAAAAAJAAoAAABLADAAAAAJAAoAAABMADAAAAAJAAoAAABNADAAAAAJAAoAAABOADAAAAAJAAoAAAA=")
 tile_set = SubResource("TileSet_2lb6k")
+
+[node name="Bat" parent="." instance=ExtResource("4_u8rbc")]
+position = Vector2(579, 338)
 
 [node name="orc" parent="." instance=ExtResource("4_xbhhu")]
 position = Vector2(488, 355)
