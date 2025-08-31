@@ -4,7 +4,7 @@ extends CharacterBody2D
 @onready var sprite: Sprite2D = $Sprite2D
 
 const SPEED = 80.0
-const JUMP_VELOCITY = -220.0
+const JUMP_VELOCITY = -720.0
 
 # Tambahan: health
 var health := 30
