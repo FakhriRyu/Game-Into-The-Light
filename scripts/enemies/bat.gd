@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
 
-enum State { PATROL, CHASE, ATTACK, DEAD }
+enum State { IDLE, PATROL, CHASE, ATTACK, DEAD }
 var current_state = State.PATROL
 
 var speed = 40
@@ -13,12 +13,16 @@ var direction = 1
 var health = 30
 var target: CharacterBody2D = null
 var attack_damage = 5
+var flip_h = false
 
 func _ready():
 	start_position = global_position
+	add_to_group("enemy")
 
 func _physics_process(delta):
 	match current_state:
+		State.IDLE:
+			state_idle(delta)
 		State.PATROL:
 			state_patrol(delta)
 		State.CHASE:
@@ -28,11 +32,14 @@ func _physics_process(delta):
 		State.DEAD:
 			state_dead()
 
+func state_idle(_delta):
+	anim_player.play("fly")
+
 func state_patrol(_delta):
 	anim_player.play("fly")
 	
 	# Simple horizontal patrol with minimal vertical movement
-	velocity.x = direction * speed * 0.3  # Much slower for smoother movement
+	velocity.x = direction * speed * 1.2  # Much slower for smoother movement
 	velocity.y = sin(Time.get_time_dict_from_system()["second"] * 0.5) * 3  # Very small vertical movement
 	
 	# Add buffer zone to prevent constant direction changes
@@ -40,15 +47,14 @@ func state_patrol(_delta):
 	if distance_from_start > patrol_range:
 		# Move back towards center before changing direction
 		if direction > 0:  # Moving right
-			velocity.x = -speed * 0.3  # Move left
+			velocity.x = -speed * 1.2  # Move left
 		else:  # Moving left
-			velocity.x = speed * 0.3   # Move right
+			velocity.x = speed * 1.2   # Move right
 		
 		# Only change direction when back near center
-		if distance_from_start < patrol_range * 0.3:
+		if distance_from_start < patrol_range * 1.2:
 			direction *= -1
 			sprite.flip_h = direction < 0
-			print("Bat: Direction changed to ", direction)
 	
 	move_and_slide()
 
@@ -90,8 +96,21 @@ func state_dead():
 	queue_free()
 
 func change_state(new_state):
-	print("Bat: State changed from ", State.keys()[current_state], " to ", State.keys()[new_state])
 	current_state = new_state
+
+# --- COMBAT: damage/knockback/death ---
+func take_damage(amount: int, from_dir: Vector2 = Vector2.ZERO) -> void:
+	if current_state == State.DEAD:
+		return
+	health -= amount
+	if health <= 0:
+		change_state(State.DEAD)
+		return
+	# small knockback; bats fly so reduce vertical push
+	var knockback := from_dir.normalized() * 80.0
+	knockback.y *= 0.4
+	velocity = knockback
+	anim_player.play("hurt")
 
 # --- SIGNALS ---
 func _on_detection_area_body_entered(body: Node2D) -> void:
@@ -102,7 +121,7 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(body: Node2D) -> void:
 	if body == target:
 		target = null
-		change_state(State.PATROL)
+		change_state(State.IDLE)
 
 func _on_attack_area_body_entered(body: Node2D) -> void:
 	if body == target:

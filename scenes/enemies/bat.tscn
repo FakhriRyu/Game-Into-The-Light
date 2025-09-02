@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://d246jowbniim6"]
+[gd_scene load_steps=14 format=3 uid="uid://d246jowbniim6"]
 
 [ext_resource type="Script" uid="uid://pr8rres7qdpl" path="res://scripts/enemies/bat.gd" id="1_5m14n"]
 [ext_resource type="Texture2D" uid="uid://l3f2m48pg1lc" path="res://assets/enemies/Bat/BatVampire_Flying.png" id="2_i6os3"]
 [ext_resource type="Texture2D" uid="uid://vkujyuw7h0rf" path="res://assets/enemies/Bat/BatVampire_Attack.png" id="3_18mee"]
+[ext_resource type="Texture2D" uid="uid://crtx4p4wytxdp" path="res://assets/enemies/Bat/BatVampire_Death.png" id="4_i6os3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jofwc"]
 radius = 4.0
@@ -129,20 +130,64 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_18mee"]
+resource_name = "dead"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("4_i6os3")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [7]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 1,
+"values": []
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m5s8h"]
 _data = {
 &"RESET": SubResource("Animation_f0cyw"),
 &"attack": SubResource("Animation_m0x8h"),
+&"dead": SubResource("Animation_18mee"),
 &"fly": SubResource("Animation_ss5yy")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4ahko"]
-radius = 75.1066
+radius = 91.022
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mu8he"]
 radius = 7.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_ss5yy"]
+radius = 7.0
+
 [node name="Bat" type="CharacterBody2D"]
+collision_layer = 4
 script = ExtResource("1_5m14n")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -161,7 +206,7 @@ libraries = {
 
 [node name="DetectionArea" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" groups=["enemy"]]
 shape = SubResource("CircleShape2D_4ahko")
 
 [node name="Attack Area" type="Area2D" parent="."]
@@ -170,6 +215,11 @@ shape = SubResource("CircleShape2D_4ahko")
 shape = SubResource("CircleShape2D_mu8he")
 
 [node name="AttackTimer" type="Timer" parent="."]
+
+[node name="HurtBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("CircleShape2D_ss5yy")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

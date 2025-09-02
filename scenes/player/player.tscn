@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://48bufkj1yw3u"]
+[gd_scene load_steps=50 format=3 uid="uid://48bufkj1yw3u"]
 
 [ext_resource type="Script" uid="uid://c0xhoipv2ear5" path="res://scripts/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bbk88eudhbj6x" path="res://assets/player/Warrior/idle/Warrior_Idle_1.png" id="2_dovo2"]
@@ -30,6 +30,15 @@
 [ext_resource type="Texture2D" uid="uid://b3usfm1sh6r83" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_9.png" id="28_5q8fn"]
 [ext_resource type="Texture2D" uid="uid://clv6r3vni4so6" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_10.png" id="29_wva7c"]
 [ext_resource type="Texture2D" uid="uid://cksi86vy4nu1" path="res://assets/player/Warrior/Death-Effect/Warrior_Death_11.png" id="30_7obkq"]
+[ext_resource type="Texture2D" uid="uid://ckm2cb56e87k6" path="res://assets/player/Warrior/Attack/Warrior_Attack_1.png" id="31_wva7c"]
+[ext_resource type="Texture2D" uid="uid://cqpuek2ps7g83" path="res://assets/player/Warrior/Attack/Warrior_Attack_2.png" id="32_7obkq"]
+[ext_resource type="Texture2D" uid="uid://glk0lxcy7tp2" path="res://assets/player/Warrior/Attack/Warrior_Attack_3.png" id="33_vo27k"]
+[ext_resource type="Texture2D" uid="uid://chmrsao3cbl7n" path="res://assets/player/Warrior/Attack/Warrior_Attack_4.png" id="34_genst"]
+[ext_resource type="Texture2D" uid="uid://cioe05pxdorg1" path="res://assets/player/Warrior/Attack/Warrior_Attack_5.png" id="35_niom3"]
+[ext_resource type="Texture2D" uid="uid://bldkg8jjd375o" path="res://assets/player/Warrior/Attack/Warrior_Attack_6.png" id="36_ttakn"]
+[ext_resource type="Texture2D" uid="uid://dki5mmtsctp6k" path="res://assets/player/Warrior/Attack/Warrior_Attack_7.png" id="37_rw8a5"]
+[ext_resource type="Texture2D" uid="uid://xq33hfpogs5t" path="res://assets/player/Warrior/Attack/Warrior_Attack_8.png" id="38_iwuka"]
+[ext_resource type="Texture2D" uid="uid://btck5fnrraouv" path="res://assets/player/Warrior/Attack/Warrior_Attack_9.png" id="39_hyqqp"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dovo2"]
 radius = 7.0
@@ -135,15 +144,53 @@ tracks/0/keys = {
 "values": [ExtResource("9_myrg7"), ExtResource("10_kvlxm"), ExtResource("11_uf5tr"), ExtResource("12_lgqa7"), ExtResource("13_8ydkj"), ExtResource("14_3j4b4"), ExtResource("15_yj68g"), ExtResource("16_ioxgp")]
 }
 
+[sub_resource type="Animation" id="Animation_ds1xl"]
+resource_name = "attack"
+length = 0.8
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("31_wva7c"), ExtResource("32_7obkq"), ExtResource("33_vo27k"), ExtResource("34_genst"), ExtResource("35_niom3"), ExtResource("36_ttakn"), ExtResource("37_rw8a5"), ExtResource("38_iwuka"), ExtResource("39_hyqqp")]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"attack_hitbox_on"
+}, {
+"args": [],
+"method": &"attack_hitbox_off"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_h17s1"]
 _data = {
 &"RESET": SubResource("Animation_5gtgg"),
+&"attack": SubResource("Animation_ds1xl"),
 &"dead": SubResource("Animation_vo27k"),
 &"fall": SubResource("Animation_yj68g"),
 &"idle": SubResource("Animation_qek5x"),
 &"jump": SubResource("Animation_je7p5"),
 &"run": SubResource("Animation_cnsyf")
 }
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1u1sw"]
+size = Vector2(20, 40)
 
 [node name="player" type="CharacterBody2D"]
 scale = Vector2(0.5, 0.5)
@@ -161,3 +208,13 @@ libraries = {
 &"": SubResource("AnimationLibrary_h17s1")
 }
 autoplay = "idle"
+
+[node name="AttackArea" type="Area2D" parent="."]
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+position = Vector2(18, 0)
+shape = SubResource("RectangleShape2D_1u1sw")
+
+[node name="AttackCooldown" type="Timer" parent="."]
+one_shot = true

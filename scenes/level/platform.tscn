@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bare2dlq36uq6"]
+
+[ext_resource type="Texture2D" uid="uid://h61ebjsxlobk" path="res://assets/tiles/CavesTilesFull.png" id="1_ni2lk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_etol2"]
+size = Vector2(144, 16)
+
+[node name="Platform" type="AnimatableBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(9, 4)
+texture = ExtResource("1_ni2lk")
+region_enabled = true
+region_rect = Rect2(864, 104, 16, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_etol2")
+one_way_collision = true

@@ -3,19 +3,24 @@ extends CharacterBody2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
 
-enum State { IDLE, PATROL, CHASE, ATTACK, DEAD }
+enum State { IDLE, PATROL, CHASE, ATTACK, HURT, DEAD }
 var current_state = State.PATROL
 
 var speed = 30
-var patrol_range = 50
+var patrol_range = 30
 var start_position
 var direction = 1
-var health = 50
+var health = 20
 var target: CharacterBody2D = null
 var attack_damage = 10
+var last_direction = 1  # Tambahkan variabel untuk menyimpan arah terakhir
+var direction_threshold = 5  # Threshold minimum untuk perubahan arah
+var _death_timer_started := false
 
 func _ready():
 	start_position = global_position
+	if not anim_player.animation_finished.is_connected(_on_anim_finished):
+		anim_player.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta):
 	match current_state:
@@ -27,6 +32,8 @@ func _physics_process(delta):
 			state_chase(delta)
 		State.ATTACK:
 			state_attack(delta)
+		State.HURT:
+			state_hurt(delta)
 		State.DEAD:
 			state_dead()
 
@@ -35,7 +42,6 @@ func _physics_process(delta):
 
 func state_idle():
 	anim_player.play("idle")
-	change_state(State.PATROL)
 
 func state_patrol(_delta):
 	anim_player.play("walk")
@@ -58,9 +64,19 @@ func state_chase(_delta):
 	
 	anim_player.play("walk")
 	var dir = sign(target.global_position.x - global_position.x)
-	var chase_speed = speed * 1.5
-	velocity.x = dir * chase_speed
-	sprite.flip_h = dir < 0
+	var chase_speed = speed * 1.7
+	
+	# Hanya ubah arah jika perbedaan posisi cukup signifikan
+	if abs(target.global_position.x - global_position.x) > direction_threshold:
+		velocity.x = dir * chase_speed
+		# Hanya ubah flip_h jika arah berubah
+		if dir != 0 and dir != last_direction:
+			sprite.flip_h = dir < 0
+			last_direction = dir
+	else:
+		# Jika player di atas orc, hentikan gerakan horizontal
+		velocity.x = 0
+	
 	move_and_slide()
 	
 	if health <= 0:
@@ -75,16 +91,47 @@ func state_attack(_delta):
 	velocity.x = 0
 	anim_player.play("attack")
 
+	# Hanya ubah flip_h jika perbedaan posisi cukup signifikan
 	var dir = sign(target.global_position.x - global_position.x)
-	sprite.flip_h = dir < 0
+	if abs(target.global_position.x - global_position.x) > direction_threshold and dir != 0:
+		sprite.flip_h = dir < 0
 
+func state_hurt(_delta):
+	velocity.x = 0
+	anim_player.play("hurt")
+	move_and_slide()
 
 func state_dead():
 	velocity = Vector2.ZERO
-	anim_player.play("dead")
+	if not _death_timer_started:
+		_death_timer_started = true
+		anim_player.play("dead")
+		await get_tree().create_timer(3.0).timeout
+		queue_free()
 
 func change_state(new_state):
+	# If already dead, ignore any further transitions
+	if current_state == State.DEAD:
+		return
+	# No-op if same state
+	if new_state == current_state:
+		return
+	# When dying, stop attacks and clear target
+	if new_state == State.DEAD:
+		if $AttackTimer.is_stopped() == false:
+			$AttackTimer.stop()
+		target = null
 	current_state = new_state
+
+func _on_anim_finished(anim_name: StringName) -> void:
+	if anim_name == "hurt" and current_state == State.HURT:
+		if health <= 0:
+			change_state(State.DEAD)
+			return
+		if target != null:
+			change_state(State.CHASE)
+		else:
+			change_state(State.PATROL)
 
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
@@ -95,7 +142,7 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(body: Node2D) -> void:
 	if body == target:
 		target = null
-		change_state(State.PATROL)
+		change_state(State.IDLE)
 
 func _on_melee_area_body_entered(body: Node2D) -> void:
 	if body == target:
@@ -119,3 +166,11 @@ func _on_attack_timer_timeout() -> void:
 
 	if target.has_method("take_damage"):
 		target.take_damage(attack_damage)
+
+func take_damage(amount: int) -> void:
+	health -= amount
+	if health <= 0:
+		change_state(State.DEAD)
+		return
+	$AttackTimer.stop()
+	change_state(State.HURT)
