@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
 
-enum State { IDLE, PATROL, CHASE, ATTACK, DEAD }
+enum State { IDLE, PATROL, CHASE, ATTACK, HURT, DEAD }
 var current_state = State.PATROL
 
 var speed = 40
@@ -14,10 +14,13 @@ var health = 30
 var target: CharacterBody2D = null
 var attack_damage = 5
 var flip_h = false
+var _death_timer_started := false
 
 func _ready():
 	start_position = global_position
 	add_to_group("enemy")
+	if not anim_player.animation_finished.is_connected(_on_anim_finished):
+		anim_player.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta):
 	match current_state:
@@ -29,6 +32,8 @@ func _physics_process(delta):
 			state_chase(delta)
 		State.ATTACK:
 			state_attack()
+		State.HURT:
+			state_hurt(delta)
 		State.DEAD:
 			state_dead()
 
@@ -90,27 +95,50 @@ func state_attack():
 	anim_player.play("attack")
 	velocity = Vector2.ZERO
 
-func state_dead():
-	anim_player.play("dead")
+func state_hurt(_delta):
 	velocity = Vector2.ZERO
-	queue_free()
+	anim_player.play("hurt")
+	move_and_slide()
+
+func state_dead():
+	velocity = Vector2.ZERO
+	if not _death_timer_started:
+		_death_timer_started = true
+		if not $AttackTimer.is_stopped():
+			$AttackTimer.stop()
+		target = null
+		anim_player.play("dead")
+		await get_tree().create_timer(1.0).timeout
+		queue_free()
 
 func change_state(new_state):
-	current_state = new_state
-
-# --- COMBAT: damage/knockback/death ---
-func take_damage(amount: int, from_dir: Vector2 = Vector2.ZERO) -> void:
 	if current_state == State.DEAD:
 		return
+	if new_state == current_state:
+		return
+	if new_state == State.DEAD:
+		if not $AttackTimer.is_stopped():
+			$AttackTimer.stop()
+		target = null
+	current_state = new_state
+
+func _on_anim_finished(anim_name: StringName) -> void:
+	if anim_name == "hurt" and current_state == State.HURT:
+		if health <= 0:
+			change_state(State.DEAD)
+			return
+		if target != null:
+			change_state(State.CHASE)
+		else:
+			change_state(State.PATROL)
+
+func take_damage(amount: int) -> void:
 	health -= amount
 	if health <= 0:
 		change_state(State.DEAD)
 		return
-	# small knockback; bats fly so reduce vertical push
-	var knockback := from_dir.normalized() * 80.0
-	knockback.y *= 0.4
-	velocity = knockback
-	anim_player.play("hurt")
+	$AttackTimer.stop()
+	change_state(State.HURT)
 
 # --- SIGNALS ---
 func _on_detection_area_body_entered(body: Node2D) -> void:

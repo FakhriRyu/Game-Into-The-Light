@@ -10,7 +10,7 @@ var speed = 30
 var patrol_range = 30
 var start_position
 var direction = 1
-var health = 20
+var health = 50
 var target: CharacterBody2D = null
 var attack_damage = 10
 var last_direction = 1  # Tambahkan variabel untuk menyimpan arah terakhir
@@ -110,7 +110,6 @@ func state_dead():
 		queue_free()
 
 func change_state(new_state):
-	# If already dead, ignore any further transitions
 	if current_state == State.DEAD:
 		return
 	# No-op if same state

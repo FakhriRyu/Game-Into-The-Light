@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://d246jowbniim6"]
+[gd_scene load_steps=16 format=3 uid="uid://d246jowbniim6"]
 
 [ext_resource type="Script" uid="uid://pr8rres7qdpl" path="res://scripts/enemies/bat.gd" id="1_5m14n"]
 [ext_resource type="Texture2D" uid="uid://l3f2m48pg1lc" path="res://assets/enemies/Bat/BatVampire_Flying.png" id="2_i6os3"]
 [ext_resource type="Texture2D" uid="uid://vkujyuw7h0rf" path="res://assets/enemies/Bat/BatVampire_Attack.png" id="3_18mee"]
 [ext_resource type="Texture2D" uid="uid://crtx4p4wytxdp" path="res://assets/enemies/Bat/BatVampire_Death.png" id="4_i6os3"]
+[ext_resource type="Texture2D" uid="uid://b8prg2xiioavg" path="res://assets/enemies/Bat/BatVampire_Hurt.png" id="5_18mee"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jofwc"]
 radius = 4.0
@@ -88,6 +89,47 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3, 4, 5]
 }
 
+[sub_resource type="Animation" id="Animation_18mee"]
+resource_name = "dead"
+length = 0.7
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("4_i6os3")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [7]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+
 [sub_resource type="Animation" id="Animation_ss5yy"]
 resource_name = "fly"
 length = 0.4
@@ -130,8 +172,10 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3]
 }
 
-[sub_resource type="Animation" id="Animation_18mee"]
-resource_name = "dead"
+[sub_resource type="Animation" id="Animation_jofwc"]
+resource_name = "hurt"
+length = 0.4
+step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -142,7 +186,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("4_i6os3")]
+"values": [ExtResource("5_18mee")]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -154,7 +198,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [7]
+"values": [4]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -163,10 +207,10 @@ tracks/2/path = NodePath("../Sprite2D:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": []
+"values": [0, 1, 2, 3, 0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m5s8h"]
@@ -174,7 +218,8 @@ _data = {
 &"RESET": SubResource("Animation_f0cyw"),
 &"attack": SubResource("Animation_m0x8h"),
 &"dead": SubResource("Animation_18mee"),
-&"fly": SubResource("Animation_ss5yy")
+&"fly": SubResource("Animation_ss5yy"),
+&"hurt": SubResource("Animation_jofwc")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4ahko"]
@@ -186,8 +231,8 @@ radius = 7.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_ss5yy"]
 radius = 7.0
 
-[node name="Bat" type="CharacterBody2D"]
-collision_layer = 4
+[node name="Bat" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 2
 script = ExtResource("1_5m14n")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -217,6 +262,7 @@ shape = SubResource("CircleShape2D_mu8he")
 [node name="AttackTimer" type="Timer" parent="."]
 
 [node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 shape = SubResource("CircleShape2D_ss5yy")
