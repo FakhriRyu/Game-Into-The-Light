@@ -7,6 +7,9 @@ signal respawned
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var attack_area: Area2D = $AttackArea
+@onready var attack_shape: CollisionShape2D = $AttackArea/CollisionShape2D
+var _attack_area_base_pos: Vector2
+var _attack_shape_base_pos: Vector2
 
 # --- Movement tunables ---
 @export var SPEED: float = 120.0
@@ -48,6 +51,11 @@ func _ready() -> void:
 	health = MAX_HEALTH
 	emit_signal("health_changed", health, MAX_HEALTH)
 
+	# cache base offset of attack area and sync to current facing
+	_attack_area_base_pos = attack_area.position
+	_attack_shape_base_pos = attack_shape.position
+	_update_attack_area_side()
+
 	# Reset attack state when animation ends
 	if not anim_player.animation_finished.is_connected(_on_anim_finished):
 		anim_player.animation_finished.connect(_on_anim_finished)
@@ -73,15 +81,18 @@ func _physics_process(delta: float) -> void:
 
 	_jump_buf_left = max(0.0, _jump_buf_left - delta)
 
-	# --- Input ---
-	var dir := Input.get_axis("move_left", "move_right")
-	_jump_logic(delta)
-
-	# --- Horizontal movement dengan accel/friction ---
-	if dir != 0:
-		velocity.x = move_toward(velocity.x, dir * SPEED, ACCEL * delta)
+	# --- Input & Movement Lock saat ATTACKING ---
+	if not ATTACKING:
+		var dir := Input.get_axis("move_left", "move_right")
+		_jump_logic(delta)
+		# --- Horizontal movement dengan accel/friction ---
+		if dir != 0:
+			velocity.x = move_toward(velocity.x, dir * SPEED, ACCEL * delta)
+		else:
+			velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
+		# Kunci gerak horizontal saat menyerang
+		velocity.x = 0
 
 	# --- Gravity ---
 	if not is_on_floor():
@@ -96,6 +107,8 @@ func _physics_process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("jump"):
+		if ATTACKING:
+			return
 		_jump_buf_left = JUMP_BUFFER
 		_jump_held = true
 	elif event.is_action_released("jump"):
@@ -112,6 +125,8 @@ func attack() -> void:
 	ATTACKING = true
 
 	anim_player.play("attack")
+	# Pastikan hitbox serangan berada di sisi yang benar saat mulai menyerang
+	_update_attack_area_side()
 
 func _on_anim_finished(anim_name: StringName) -> void:
 	if anim_name == "attack":
@@ -178,6 +193,14 @@ func _update_animation() -> void:
 	# Flip arah
 	if abs(velocity.x) > 1.0:
 		sprite.flip_h = velocity.x < 0
+		_update_attack_area_side()
+
+func _update_attack_area_side() -> void:
+	# Mirror the collision shape position instead of the Area2D node,
+	# because the shape carries the actual offset used for collisions.
+	var pos := _attack_shape_base_pos
+	pos.x = abs(pos.x) * (-1 if sprite.flip_h else 1)
+	attack_shape.position = pos
 
 # ---------------- Combat / Health ----------------
 
