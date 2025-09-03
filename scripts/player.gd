@@ -12,7 +12,7 @@ var _attack_area_base_pos: Vector2
 var _attack_shape_base_pos: Vector2
 
 # --- Movement tunables ---
-@export var SPEED: float = 120.0
+@export var SPEED: float = 90.0
 @export var JUMP_VELOCITY: float = -220.0
 @export var ACCEL: float = 1200.0
 @export var FRICTION: float = 1400.0

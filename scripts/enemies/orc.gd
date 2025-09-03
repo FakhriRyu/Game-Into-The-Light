@@ -127,10 +127,12 @@ func _on_anim_finished(anim_name: StringName) -> void:
 		if health <= 0:
 			change_state(State.DEAD)
 			return
-		if target != null:
-			change_state(State.CHASE)
-		else:
-			change_state(State.PATROL)
+		# Pastikan kembali mengejar player setelah selesai hurt
+		if target == null:
+			var players := get_tree().get_nodes_in_group("player")
+			if players.size() > 0:
+				target = players[0]
+		change_state(State.ATTACK)
 
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
