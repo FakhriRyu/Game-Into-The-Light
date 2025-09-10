@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://cfpy1kxebfqev"]
+[gd_scene load_steps=13 format=4 uid="uid://cfpy1kxebfqev"]
 
 [ext_resource type="PackedScene" uid="uid://48bufkj1yw3u" path="res://scenes/player/player.tscn" id="1_cfjva"]
 [ext_resource type="Texture2D" uid="uid://de0u4yw40tjnx" path="res://assets/backgrounds/cave.png" id="1_ybxn4"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://e3iffwap1x51" path="res://scenes/enemies/orc.tscn" id="4_xbhhu"]
 [ext_resource type="PackedScene" uid="uid://bare2dlq36uq6" path="res://scenes/level/platform.tscn" id="7_nfqjd"]
 [ext_resource type="PackedScene" uid="uid://85hw66oortcx" path="res://scenes/level/lava.tscn" id="8_so7sr"]
+[ext_resource type="PackedScene" uid="uid://1q86or0slh04" path="res://scenes/level/diamond.tscn" id="9_2qg3m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ybxn4"]
 texture = ExtResource("2_2lb6k")
@@ -4774,7 +4775,7 @@ scale = Vector2(0.15, 0.15)
 
 [node name="Platform16" parent="Platforms" instance=ExtResource("7_nfqjd")]
 z_index = 1
-position = Vector2(1609, 262)
+position = Vector2(1614, 262)
 scale = Vector2(0.15, 0.15)
 
 [node name="Background" type="Node" parent="."]
@@ -4924,3 +4925,22 @@ position = Vector2(1484, 443)
 [node name="Lava31" parent="Lavas" instance=ExtResource("8_so7sr")]
 z_index = 6
 position = Vector2(1492, 443)
+
+[node name="Diamonds" type="Node" parent="."]
+
+[node name="Diamond" parent="Diamonds" instance=ExtResource("9_2qg3m")]
+z_index = 7
+position = Vector2(794, 251)
+scale = Vector2(0.5, 0.5)
+
+[node name="Diamond2" parent="Diamonds" instance=ExtResource("9_2qg3m")]
+z_index = 7
+position = Vector2(1082, 287)
+scale = Vector2(0.5, 0.5)
+
+[node name="Diamond3" parent="Diamonds" instance=ExtResource("9_2qg3m")]
+z_index = 7
+position = Vector2(1135, 286)
+scale = Vector2(0.5, 0.5)
+
+[node name="HUD" type="CanvasLayer" parent="."]

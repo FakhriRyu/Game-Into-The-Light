@@ -16,6 +16,8 @@ var attack_damage = 10
 var last_direction = 1  # Tambahkan variabel untuk menyimpan arah terakhir
 var direction_threshold = 5  # Threshold minimum untuk perubahan arah
 var _death_timer_started := false
+var attack_delay_timer = 0.0  # Timer untuk delay attack setelah terkena damage
+var attack_delay_duration = 1.0  # Durasi delay dalam detik
 
 func _ready():
 	start_position = global_position
@@ -23,6 +25,10 @@ func _ready():
 		anim_player.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta):
+	# Kurangi timer delay attack
+	if attack_delay_timer > 0:
+		attack_delay_timer -= delta
+	
 	match current_state:
 		State.IDLE:
 			state_idle()
@@ -88,6 +94,12 @@ func state_attack(_delta):
 		change_state(State.IDLE)
 		return
 
+	# Cek apakah masih dalam delay attack
+	if attack_delay_timer > 0:
+		# Jika masih dalam delay, ubah ke state chase sementara
+		change_state(State.CHASE)
+		return
+
 	velocity.x = 0
 	anim_player.play("attack")
 
@@ -147,8 +159,10 @@ func _on_detection_area_body_exited(body: Node2D) -> void:
 
 func _on_melee_area_body_entered(body: Node2D) -> void:
 	if body == target:
-		change_state(State.ATTACK)
-		$AttackTimer.start()
+		# Cek apakah masih dalam delay attack
+		if attack_delay_timer <= 0:
+			change_state(State.ATTACK)
+			$AttackTimer.start()
 
 func _on_melee_area_body_exited(body: Node2D) -> void:
 	if body == target:
@@ -174,4 +188,5 @@ func take_damage(amount: int) -> void:
 		change_state(State.DEAD)
 		return
 	$AttackTimer.stop()
+	attack_delay_timer = attack_delay_duration  # Mulai timer delay attack
 	change_state(State.HURT)

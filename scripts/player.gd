@@ -24,7 +24,7 @@ var _attack_shape_base_pos: Vector2
 
 # --- Health / combat ---
 @export var MAX_HEALTH: int = 30
-@export var I_FRAMES: float = 0.6  # kebal setelah kena damage
+@export var I_FRAMES: float = 0.6
 @export var KNOCKBACK: Vector2 = Vector2(80, -120)
 
 #--- Attack ---
